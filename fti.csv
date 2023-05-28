@@ -1,0 +1,52 @@
+code;flag;name;cbdc;cash_limit;inflation
+AR;🇦🇷;Argentina;Research;10000 USD;109
+AU;🇦🇺;Australia;Research;10000 AUD;7
+AT;🇦🇹;Austria;Research;no limit;9.7
+BE;🇧🇪;Belgium;Research;3000 EUR;5.6
+BR;🇧🇷;Brazil;Proof of concept;30000 BRL;4.18
+BG;🇧🇬;Bulgaria;None;5000 EUR;11.6
+CA;🇨🇦;Canada;Pilot;10000 CAD;4.4
+CN;🇨🇳;China;Pilot;200000 RMB;0.1
+HR;🇭🇷;Croatia;Research;15000 EUR;8.9
+CY;🇨🇾;Cyprus;Research;no limit;3.7
+CZ;🇨🇿;Czechia;Research;10000 EUR;12.7
+DK;🇩🇰;Denmark;Research;2500 EUR;5.3
+EE;🇪🇪;Estonia;Research;no limit;13.5
+FI;🇫🇮;Finland;Research;no limit;7.9
+FR;🇫🇷;France;Pilot;1000 EUR;5.9
+DE;🇩🇪;Germany;Research;10000 EUR;7.2
+GR;🇬🇷;Greece;Research;500 EUR;3
+HU;🇭🇺;Hungary;Proof of concept;4000 EUR;24
+IS;🇮🇸;Iceland;Research;no limit;9.5
+IN;🇮🇳;India;Pilot;20000 INR;4.7
+ID;🇮🇩;Indonesia;Research;100 000 000 IDR;4.33
+IE;🇮🇪;Ireland;Research;no limit;7.2
+IL;🇮🇱;Israel;Proof of concept;6000 ILS;5
+IT;🇮🇹;Italy;Research;1000 EUR;8.2
+JP;🇯🇵;Japan;Proof of concept;1000000 JPY;3.5
+KR;🇰🇷;South Korea;Proof of concept;10000000 KRW;3.7
+LV;🇱🇻;Latvia;Research;7000 EUR;15.1
+LT;🇱🇹;Lithuania;Research;3000 EUR;14.5
+LU;🇱🇺;Luxembourg;Research;no limit;3.7
+MT;🇲🇹;Malta;Research;10000 EUR;6.4
+MX;🇲🇽;Mexico;Research;200000 MXN;6.25
+NL;🇳🇱;Netherlands;Research;3000 EUR;5.2
+NO;🇳🇴;Norway;Proof of concept;10000 EUR;6.4
+PL;🇵🇱;Poland;Research;3000 EUR;14.7
+PT;🇵🇹;Portugal;Research;3000 EUR;5.7
+RO;🇷🇴;Romania;None;10000 EUR;11.23
+RU;🇷🇺;Russia;Proof of concept;100000 RUB;2.3
+SA;🇸🇦;Saudi Arabia;Pilot;60000 SAR;2.7
+SG;🇸🇬;Singapore;Pilot;20000 SGD;5.7
+SK;🇸🇰;Slovakia;Research;5000 EUR;13.8
+SI;🇸🇮;Slovenia;Research;5000 EUR;9.4
+ZA;🇿🇦;South Africa;Research;25000 ZAR;6.8
+ES;🇪🇸;Spain;Research;1000 EUR;4.1
+SE;🇸🇪;Sweden;Proof of concept;no limit;10.5
+CH;🇨🇭;Switzerland;Research;100000 CHF;2.6
+TW;🇹🇼;Taiwan;Proof of concept;500000 TWD;2.35
+TR;🇹🇷;Turkey;Proof of concept;75000 TRY;43.68
+AE;🇦🇪;United Arab Emirates;Pilot;2000 AED;3.27
+GB;🇬🇧;United Kingdom;Research;10000 EUR;8.7
+US;🇺🇸;United States of America;Research;10000 USD;4.9
+UY;🇺🇾;Uruguay;Pilot;5000 USD;7.61

@@ -1,0 +1,1 @@
+Financial Tyranny Index (FTI)
