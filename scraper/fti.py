@@ -1,3 +1,4 @@
+import math
 from iso3166 import countries as iso3166_countries
 import requests
 import requests_cache
@@ -20,14 +21,17 @@ class Country:
         self.name = name
         self.flag = code_to_emoji(code)
         self.cbdc_status = None
-        self.cbdc_status_numeric = None
+        self.cbdc_status_normalized = None
         self.cryptocurrency_status = None
-        self.cryptocurrency_status_numeric = None
+        self.cryptocurrency_status_normalized = None
         self.cash_limit = None
-        self.cash_limit_euro = None
+        self.cash_limit_normalized = None
         self.inflation = None
+        self.inflation_normalized = None
         self.social_security = None
+        self.social_security_normalized = None
         self.personal_income_tax = None
+        self.personal_income_tax_normalized = None
 
     @staticmethod
     def by_name(name):
@@ -82,10 +86,10 @@ def add_cbdc_status(countries):
         if country.cbdc_status is not None:
             if STATUS[status] > STATUS[country.cbdc_status]:
                 country.cbdc_status = status
-                country.cbdc_status_numeric = STATUS[status]
+                country.cbdc_status_normalized = STATUS[status]
             return
         country.cbdc_status = status
-        country.cbdc_status_numeric = STATUS[status]
+        country.cbdc_status_normalized = STATUS[status]
 
     # for c in countries.values():
     data = requests.get("https://cbdctracker.org/api/currencies").json()
@@ -186,6 +190,27 @@ def add_cash_limit(countries):
         "Japan": "1000000 JPY",
         "South Korea": "10000000 KRW",
     }
+    CURRENCY_TO_EURO = {
+        "AED": 0.25,
+        "AUD": 0.61,
+        "BRL": 0.18,
+        "CAD": 0.69,
+        "CHF": 1.03,
+        "IDR": 0.000062,
+        "ILS": 0.25,
+        "INR": 0.011,
+        "JPY": 0.0067,
+        "KRW": 0.00071,
+        "MXN": 0.053,
+        "RMB": 0.13,
+        "RUB": 0.011,
+        "SAR": 0.25,
+        "SGD": 0.69,
+        "TRY": 0.045,
+        "TWD": 0.03,
+        "USD": 0.94,
+        "ZAR": 0.047,
+    }
     dd = d1.copy()
     dd.update(d2)
     dd.update(d3)
@@ -193,14 +218,14 @@ def add_cash_limit(countries):
         c = Country.by_name(country)
         c.cash_limit = limit
         if limit == "No limit":
-            c.cash_limit_euro = 100000
+            c.cash_limit_normalized = 0
             continue
         limit = limit.split(" ")
         if limit[1] == "EUR":
-            c.cash_limit_euro = int(limit[0])
+            eur = int(limit[0])
         else:
-            rate = 1.3
-            c.cash_limit_euro = int(int(limit[0]) * rate)
+            eur = round(int(limit[0]) * CURRENCY_TO_EURO[limit[1]])
+        c.cash_limit_normalized = round(max(0, 20000 - eur) / 200)
 
 
 def add_inflation(countries):
@@ -213,11 +238,15 @@ def add_inflation(countries):
     for tr in trs[1:]:
         trc = tr.getchildren()
         country = trc[0].text_content().strip()
-        inflation = trc[1].text_content().strip()
+        inflation = float(trc[1].text_content().strip())
         if country.lower() in ["euro area", "european union"]:
             continue
         c = Country.by_name(country)
         c.inflation = inflation
+        if inflation >= 1:
+            c.inflation_normalized = round(max(0, min(100, 50*math.log10(inflation))))
+        else:
+            c.inflation_normalized = 0
 
 
 def add_social_security(countries):
@@ -235,6 +264,7 @@ def add_social_security(countries):
             continue
         c = Country.by_name(country)
         c.social_security = social_security
+        c.social_security_normalized = 0  # TODO
 
 
 def add_personal_income_tax(countries):
@@ -252,6 +282,7 @@ def add_personal_income_tax(countries):
             continue
         c = Country.by_name(country)
         c.personal_income_tax = personal_income_tax
+        c.personal_income_tax_normalized = 0  # TODO
 
 
 def add_cryptocurrency_status(countries):
@@ -369,7 +400,7 @@ def add_cryptocurrency_status(countries):
     for c, s in data.items():
         country = Country.by_name(c)
         country.cryptocurrency_status = s
-        country.cryptocurrency_status_numeric = STATUS[s]
+        country.cryptocurrency_status_normalized = STATUS[s]
 
 
 def print_csv(countries):
@@ -378,14 +409,17 @@ def print_csv(countries):
         "flag",
         "name",
         "cbdc_status",
-        "cbdc_status_numeric",
+        "cbdc_status_normalized",
         "cryptocurrency_status",
-        "cryptocurrency_status_numeric",
+        "cryptocurrency_status_normalized",
         "cash_limit",
-        "cash_limit_euro",
+        "cash_limit_normalized",
         "inflation",
+        "inflation_normalized",
         "social_security",
+        "social_security_normalized",
         "personal_income_tax",
+        "personal_income_tax_normalized",
     ]
     print(";".join(FIELDS))
     for c in countries.values():
