@@ -19,10 +19,15 @@ class Country:
         self.code = code
         self.name = name
         self.flag = code_to_emoji(code)
-        self.cbdc = None
+        self.cbdc_status = None
+        self.cbdc_status_numeric = None
+        self.cryptocurrency_status = None
+        self.cryptocurrency_status_numeric = None
         self.cash_limit = None
+        self.cash_limit_euro = None
         self.inflation = None
-        # self.nfsi = None
+        self.social_security = None
+        self.personal_income_tax = None
 
     @staticmethod
     def by_name(name):
@@ -51,32 +56,42 @@ class Country:
             return countries["GW"]
         if name == "Macedonia":
             return countries["MK"]
+        if name == "Bosnia And Herzegovina":
+            return countries["BA"]
+        if name == "Republic of the Congo":
+            return countries["CG"]
+        if name == "St Lucia":
+            return countries["LC"]
+        if name == "Trinidad And Tobago":
+            return countries["TT"]
         assert False, f"unknown country: {name}"
 
 
 # add CBDC rollout data from https://cbdctracker.org/
-def add_cbdc(countries):
-    WEIGHT = {
+def add_cbdc_status(countries):
+    STATUS = {
         "Cancelled": 0,
-        "Research": 1,
-        "Proof of concept": 2,
-        "Pilot": 3,
-        "Launched": 4,
+        "Research": 20,
+        "Proof of concept": 50,
+        "Pilot": 80,
+        "Launched": 100,
     }
 
     def process(country, status):
         # already present, let's set the highest status
-        if country.cbdc is not None:
-            if WEIGHT[status] > WEIGHT[country.cbdc]:
-                country.cbdc = status
+        if country.cbdc_status is not None:
+            if STATUS[status] > STATUS[country.cbdc_status]:
+                country.cbdc_status = status
+                country.cbdc_status_numeric = STATUS[status]
             return
-        country.cbdc = status
+        country.cbdc_status = status
+        country.cbdc_status_numeric = STATUS[status]
 
     # for c in countries.values():
     data = requests.get("https://cbdctracker.org/api/currencies").json()
     for d in data:
         country, status = d["country"].strip(), d["status"].strip()
-        assert status in WEIGHT, f"unknown status: {status}"
+        assert status in STATUS, f"unknown status: {status}"
         try:
             c = Country.by_name(country)
         except AssertionError:
@@ -113,25 +128,25 @@ def add_cbdc(countries):
 def add_cash_limit(countries):
     # from https://www.europe-consommateurs.eu/en/shopping-internet/cash-payment-limitations.html
     d1 = {
-        "Austria": "no limit",
+        "Austria": "No limit",
         "Belgium": "3000 EUR",
         "Bulgaria": "5000 EUR",
         "Croatia": "15000 EUR",
-        "Cyprus": "no limit",
+        "Cyprus": "No limit",
         "Czechia": "10000 EUR",
         "Denmark": "2500 EUR",
-        "Estonia": "no limit",
-        "Finland": "no limit",
+        "Estonia": "No limit",
+        "Finland": "No limit",
         "France": "1000 EUR",
         "Germany": "10000 EUR",
         "Greece": "500 EUR",
         "Hungary": "4000 EUR",
-        "Iceland": "no limit",
-        "Ireland": "no limit",
+        "Iceland": "No limit",
+        "Ireland": "No limit",
         "Italy": "1000 EUR",
         "Latvia": "7000 EUR",
         "Lithuania": "3000 EUR",
-        "Luxembourg": "no limit",
+        "Luxembourg": "No limit",
         "Malta": "10000 EUR",
         "Netherlands": "3000 EUR",
         "Norway": "10000 EUR",
@@ -141,7 +156,7 @@ def add_cash_limit(countries):
         "Slovakia": "5000 EUR",
         "Slovenia": "5000 EUR",
         "Spain": "1000 EUR",
-        "Sweden": "no limit",
+        "Sweden": "No limit",
         "United Kingdom": "10000 EUR",
     }
     # from https://www.sgs.com/en/-/media/sgscorp/documents/corporate/brochures/355sgsctsanticorruptioncashpayments-limitations75x105v2lr.cdn.en.pdf
@@ -174,9 +189,18 @@ def add_cash_limit(countries):
     dd = d1.copy()
     dd.update(d2)
     dd.update(d3)
-    for d in dd.items():
-        c = Country.by_name(d[0])
-        c.cash_limit = d[1]
+    for country, limit in dd.items():
+        c = Country.by_name(country)
+        c.cash_limit = limit
+        if limit == "No limit":
+            c.cash_limit_euro = 100000
+            continue
+        limit = limit.split(" ")
+        if limit[1] == "EUR":
+            c.cash_limit_euro = int(limit[0])
+        else:
+            rate = 1.3
+            c.cash_limit_euro = int(int(limit[0]) * rate)
 
 
 def add_inflation(countries):
@@ -190,21 +214,182 @@ def add_inflation(countries):
         trc = tr.getchildren()
         country = trc[0].text_content().strip()
         inflation = trc[1].text_content().strip()
-        if country in ["Euro Area", "European Union"]:
+        if country.lower() in ["euro area", "european union"]:
             continue
         c = Country.by_name(country)
         c.inflation = inflation
 
 
-"""
-# add negated financial secrecy index data from https://fsi.taxjustice.net/
-def add_nfsi(countries):
-    data = requests.get("https://fsi.taxjustice.net/api/countries.php?period=22").json()
-    for c in data:
-        country = countries[c["country_id"]]
-        country.nfsi = int(100.0 - c["index_score"])
-"""
+def add_social_security(countries):
+    page = requests.get(
+        "https://tradingeconomics.com/country-list/social-security-rate?continent=world",
+        headers={"User-Agent": "Mozilla/5.0"},
+    )
+    tree = html.fromstring(page.content)
+    trs = tree.xpath("//tr")
+    for tr in trs[1:]:
+        trc = tr.getchildren()
+        country = trc[0].text_content().strip()
+        social_security = trc[1].text_content().strip()
+        if country.lower() in ["euro area", "european union"]:
+            continue
+        c = Country.by_name(country)
+        c.social_security = social_security
 
+
+def add_personal_income_tax(countries):
+    page = requests.get(
+        "https://tradingeconomics.com/country-list/personal-income-tax-rate?continent=world",
+        headers={"User-Agent": "Mozilla/5.0"},
+    )
+    tree = html.fromstring(page.content)
+    trs = tree.xpath("//tr")
+    for tr in trs[1:]:
+        trc = tr.getchildren()
+        country = trc[0].text_content().strip()
+        personal_income_tax = trc[1].text_content().strip()
+        if country.lower() in ["euro area", "european union"]:
+            continue
+        c = Country.by_name(country)
+        c.personal_income_tax = personal_income_tax
+
+
+def add_cryptocurrency_status(countries):
+    STATUS = {
+        "Hostile": 100,
+        "Contentious": 70,
+        "Restricted": 40,
+        "Permissive": 10,
+        "Legal tender": 0,
+    }
+    # from https://en.wikipedia.org/wiki/Legality_of_cryptocurrency_by_country_or_territory
+    data = {
+        "Algeria": "Hostile",
+        "Egypt": "Hostile",
+        "Morocco": "Hostile",
+        "Nigeria": "Contentious",
+        "Tanzania": "Permissive",
+        "Central African Republic": "Legal tender",
+        "Mauritius": "Permissive",
+        "Angola": "Permissive",
+        "South Africa": "Permissive",
+        "Namibia": "Contentious",
+        "Canada": "Contentious",
+        "United States": "Permissive",
+        "Mexico": "Permissive",
+        "Costa Rica": "Permissive",
+        "El Salvador": "Legal tender",
+        "Nicaragua": "Permissive",
+        "Jamaica": "Permissive",
+        "Trinidad and Tobago": "Permissive",
+        "Argentina": "Contentious",
+        "Bolivia": "Hostile",
+        "Brazil": "Permissive",
+        "Chile": "Permissive",
+        "Colombia": "Contentious",
+        "Ecuador": "Contentious",
+        "Venezuela": "Permissive",
+        "Afghanistan": "Hostile",
+        "Kyrgyzstan": "Permissive",
+        "Uzbekistan": "Permissive",
+        "United Arab Emirates": "Contentious",
+        "Israel": "Permissive",
+        "Saudi Arabia": "Contentious",
+        "Jordan": "Contentious",
+        "Lebanon": "Permissive",
+        "Turkey": "Contentious",
+        "Qatar": "Contentious",
+        "Iran": "Contentious",
+        "Bangladesh": "Hostile",
+        "India": "Permissive",
+        "Nepal": "Hostile",
+        "Pakistan": "Permissive",
+        "China": "Hostile",
+        "Hong Kong": "Permissive",
+        "Japan": "Permissive",
+        "South Korea": "Permissive",
+        "Taiwan": "Contentious",
+        "Cambodia": "Contentious",
+        "Indonesia": "Restricted",
+        "Malaysia": "Permissive",
+        "Philippines": "Permissive",
+        "Singapore": "Permissive",
+        "Thailand": "Restricted",
+        "Vietnam": "Restricted",
+        "Brunei": "Permissive",
+        "Austria": "Permissive",
+        "Croatia": "Permissive",
+        "Czech Republic": "Permissive",
+        "Germany": "Permissive",
+        "Hungary": "Permissive",
+        "Gibraltar": "Permissive",
+        "Poland": "Permissive",
+        "Romania": "Permissive",
+        "Slovakia": "Permissive",
+        "Slovenia": "Permissive",
+        "Switzerland": "Permissive",
+        "Albania": "Permissive",
+        "Belarus": "Permissive",
+        "Georgia": "Permissive",
+        "Kosovo": "Permissive",
+        "Russia": "Contentious",
+        "Ukraine": "Contentious",
+        "Denmark": "Permissive",
+        "Estonia": "Permissive",
+        "Finland": "Permissive",
+        "Iceland": "Permissive",
+        "Lithuania": "Permissive",
+        "Norway": "Permissive",
+        "Sweden": "Permissive",
+        "Bosnia and Herzegovina": "Permissive",
+        "Bulgaria": "Permissive",
+        "Cyprus": "Permissive",
+        "Greece": "Permissive",
+        "Italy": "Permissive",
+        "Malta": "Permissive",
+        "North Macedonia": "Permissive",
+        "Portugal": "Permissive",
+        "Spain": "Permissive",
+        "Belgium": "Permissive",
+        "France": "Permissive",
+        "Ireland": "Permissive",
+        "Luxembourg": "Permissive",
+        "Netherlands": "Permissive",
+        "United Kingdom": "Permissive",
+        "Australia": "Permissive",
+        "New Zealand": "Permissive",
+        "Fiji": "Permissive",
+        "Tuvalu": "Permissive",
+        "Vanuatu": "Permissive",
+        "Marshall Islands": "Permissive",
+        "Palau": "Permissive",
+        "Samoa": "Permissive",
+        "Tonga": "Permissive",
+    }
+    for c, s in data.items():
+        country = Country.by_name(c)
+        country.cryptocurrency_status = s
+        country.cryptocurrency_status_numeric = STATUS[s]
+
+
+def print_csv(countries):
+    FIELDS = [
+        "code",
+        "flag",
+        "name",
+        "cbdc_status",
+        "cbdc_status_numeric",
+        "cryptocurrency_status",
+        "cryptocurrency_status_numeric",
+        "cash_limit",
+        "cash_limit_euro",
+        "inflation",
+        "social_security",
+        "personal_income_tax",
+    ]
+    print(";".join(FIELDS))
+    for c in countries.values():
+        print(";".join([str(getattr(c, f, "")) for f in FIELDS]))
 
 def main():
     for c in iso3166_countries:
@@ -237,15 +422,14 @@ def main():
             name = r[name]
         countries[c.alpha2] = Country(c.alpha2, name)
 
-    add_cbdc(countries)
+    add_cbdc_status(countries)
+    add_cryptocurrency_status(countries)
     add_cash_limit(countries)
     add_inflation(countries)
-    # add_nfsi(countries)
+    add_social_security(countries)
+    add_personal_income_tax(countries)
 
-    print(f"code;flag;name;cbdc;cash_limit;inflation")
-    for c in countries.values():
-        if c.cash_limit is not None:
-            print(f"{c.code};{c.flag};{c.name};{c.cbdc};{c.cash_limit};{c.inflation}")
+    print_csv(countries)
 
 
 if __name__ == "__main__":
