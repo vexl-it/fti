@@ -316,7 +316,7 @@ def add_social_security(countries):
             continue
         c = Country.by_name(country)
         c.social_security = social_security
-        c.social_security_normalized = round(min(100, float(social_security)))
+        c.social_security_normalized = round(min(100, float(social_security) * 2))
 
 
 def add_personal_income_tax(countries):
@@ -334,7 +334,7 @@ def add_personal_income_tax(countries):
             continue
         c = Country.by_name(country)
         c.personal_income_tax = personal_income_tax
-        c.personal_income_tax_normalized = round(min(100, float(personal_income_tax)))
+        c.personal_income_tax_normalized = round(min(100, float(personal_income_tax) * 2))
 
 
 def add_cryptocurrency_status(countries):
