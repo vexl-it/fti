@@ -6,6 +6,11 @@ from lxml import html
 
 requests_cache.install_cache("fti")
 
+# fmt: off
+EURO_AREA_COUNTRIES = ["AT", "BE", "HR", "CY", "EE", "FI", "FR", "DE", "GR", "IE",
+                       "IT", "LV", "LT", "LU", "MT", "NL", "PT", "SK", "SI", "ES"]
+# fmt: on
+
 
 def code_to_emoji(code):
     OFFSET = ord("🇦") - ord("A")
@@ -26,8 +31,8 @@ class Country:
         self.cryptocurrency_status_normalized = 0
         self.cash_limit = None
         self.cash_limit_normalized = None
-        self.inflation = None
-        self.inflation_normalized = None
+        self.money_supply_growth = None
+        self.money_supply_growth_normalized = None
         self.social_security = None
         self.social_security_normalized = None
         self.personal_income_tax = None
@@ -104,10 +109,7 @@ def add_cbdc_status(countries):
         if not c:
             cc = None
             if country == "Euro Area":
-                # fmt: off
-                cc = ["AT", "BE", "HR", "CY", "EE", "FI", "FR", "DE", "GR", "IE",
-                      "IT", "LV", "LT", "LU", "MT", "NL", "PT", "SK", "SI", "ES"]
-                # fmt: on
+                cc = EURO_AREA_COUNTRIES
             elif country == "France & Switzerland":
                 cc = ["FR", "CH"]
             elif country == "France & Singapore":
@@ -229,25 +231,74 @@ def add_cash_limit(countries):
         c.cash_limit_normalized = round(max(0, 20000 - eur) / 200)
 
 
-def add_inflation(countries):
-    page = requests.get(
-        "https://tradingeconomics.com/country-list/inflation-rate?continent=world",
-        headers={"User-Agent": "Mozilla/5.0"},
-    )
-    tree = html.fromstring(page.content)
-    trs = tree.xpath("//tr")
-    for tr in trs[1:]:
-        trc = tr.getchildren()
-        country = trc[0].text_content().strip()
-        inflation = float(trc[1].text_content().strip())
-        if country.lower() in ["euro area", "european union"]:
-            continue
-        c = Country.by_name(country)
-        c.inflation = inflation
-        if inflation >= 1:
-            c.inflation_normalized = round(max(0, min(100, 50*math.log10(inflation))))
+def add_money_supply_growth(countries):
+    # from https://porkopolis.io/basemoney
+    data = {
+        "United States": -15.7,
+        "China": 9.6,
+        "Euro area": -4.5,
+        "Japan": -5.6,
+        "India": 10.3,
+        "United Kingdom": -3.4,
+        "Canada": -18.9,
+        "Russia": 20.1,
+        "Iran": 27.8,
+        "Brazil": 16.6,
+        "South Korea": 10.7,
+        "Australia": 9.5,
+        "Mexico": 10.6,
+        "Indonesia": 27.0,
+        "Saudi Arabia": 2.2,
+        "Turkey": 68.5,
+        "Taiwan": 10.8,
+        "Switzerland": -21.0,
+        "Poland": -6.4,
+        "Argentina": 42.4,
+        "Sweden": 3.3,
+        "Thailand": -1.3,
+        "Israel": 2.5,
+        "Norway": 2.8,
+        "Nigeria": 20.6,
+        "United Arab Emirates": 5.3,
+        "Egypt": 15.6,
+        "Bangladesh": 17.4,
+        "Malaysia": 27.6,
+        "Singapore": -1.1,
+        "Vietnam": -9.7,
+        "South Africa": 14.0,
+        "Philippines": 5.1,
+        "Denmark": 15.5,
+        "Pakistan": 7.7,
+        "Hong Kong": -10.1,
+        "Colombia": 6.5,
+        "Chile": -17.8,
+        "Romania": 12.3,
+        "Czech Republic": -1.8,
+        "Iraq": 21.0,
+        "New Zealand": 22.7,
+        "Peru": -4.4,
+        "Kazakhstan": 11.9,
+        "Qatar": -7.5,
+        "Ukraine": 19.6,
+        "Algeria": 21.9,
+        "Hungary": 54.4,
+        "WA CFA": 4.7,
+        "CA CFA": 21.5,
+    }
+    for country, growth in data.items():
+        if country == "Euro area":
+            cc = [countries[c] for c in EURO_AREA_COUNTRIES]
+        elif country == "WA CFA":
+            WA_CFA_COUNTRIES = ["BJ", "BF", "CI", "GW", "ML", "NE", "SN", "TG"]
+            cc = [countries[c] for c in WA_CFA_COUNTRIES]
+        elif country == "CA CFA":
+            CA_CFA_COUNTRIES = ["CM", "CF", "TD", "CG", "GA", "GQ"]
+            cc = [countries[c] for c in CA_CFA_COUNTRIES]
         else:
-            c.inflation_normalized = 0
+            cc = [Country.by_name(country)]
+        for c in cc:
+            c.money_supply_growth = growth
+            c.money_supply_growth_normalized = min(100, max(0, growth) * 2)
 
 
 def add_social_security(countries):
@@ -416,18 +467,19 @@ def print_csv(countries):
         # "cryptocurrency_status_normalized",
         "cash_limit",
         # "cash_limit_normalized",
-        "inflation",
-        # "inflation_normalized",
+        "money_supply_growth",
+        # "money_supply_growth_normalized",
         "social_security",
         # "social_security_normalized",
         "personal_income_tax",
         # "personal_income_tax_normalized",
-        "financial_tyranny_index"
+        "financial_tyranny_index",
     ]
     print("\t".join(FIELDS))
     for c in countries.values():
         if all(getattr(c, f) is not None for f in FIELDS):
             print("\t".join([str(getattr(c, f)) for f in FIELDS]))
+
 
 def main():
     for c in iso3166_countries:
@@ -463,7 +515,7 @@ def main():
     add_cbdc_status(countries)
     add_cryptocurrency_status(countries)
     add_cash_limit(countries)
-    add_inflation(countries)
+    add_money_supply_growth(countries)
     add_social_security(countries)
     add_personal_income_tax(countries)
 
@@ -473,7 +525,7 @@ def main():
             v += c.cbdc_status_normalized * 0.2
             v += c.cryptocurrency_status_normalized * 0.2
             v += c.cash_limit_normalized * 0.2
-            v += c.inflation_normalized * 0.2
+            v += c.money_supply_growth_normalized * 0.2
             v += c.social_security_normalized * 0.1
             v += c.personal_income_tax_normalized * 0.1
             v = round(v)
