@@ -20,10 +20,10 @@ class Country:
         self.code = code
         self.name = name
         self.flag = code_to_emoji(code)
-        self.cbdc_status = None
-        self.cbdc_status_normalized = None
-        self.cryptocurrency_status = None
-        self.cryptocurrency_status_normalized = None
+        self.cbdc_status = "Unknown"
+        self.cbdc_status_normalized = 0
+        self.cryptocurrency_status = "Unknown"
+        self.cryptocurrency_status_normalized = 0
         self.cash_limit = None
         self.cash_limit_normalized = None
         self.inflation = None
@@ -32,6 +32,7 @@ class Country:
         self.social_security_normalized = None
         self.personal_income_tax = None
         self.personal_income_tax_normalized = None
+        self.financial_tyranny_index = None
 
     @staticmethod
     def by_name(name):
@@ -74,6 +75,7 @@ class Country:
 # add CBDC rollout data from https://cbdctracker.org/
 def add_cbdc_status(countries):
     STATUS = {
+        "Unknown": 0,
         "Cancelled": 0,
         "Research": 20,
         "Proof of concept": 50,
@@ -91,7 +93,6 @@ def add_cbdc_status(countries):
         country.cbdc_status = status
         country.cbdc_status_normalized = STATUS[status]
 
-    # for c in countries.values():
     data = requests.get("https://cbdctracker.org/api/currencies").json()
     for d in data:
         country, status = d["country"].strip(), d["status"].strip()
@@ -173,7 +174,7 @@ def add_cash_limit(countries):
         "Singapore": "20000 SGD",
         "South Africa": "25000 ZAR",
         "Taiwan": "500000 TWD",
-        "United Arab Emirates": "2000 AED",
+        "United Arab Emirates": "55000 AED",
         "United States of America": "10000 USD",
         "India": "10000 INR",
         "Mexico": "200000 MXN",
@@ -216,7 +217,6 @@ def add_cash_limit(countries):
     dd.update(d3)
     for country, limit in dd.items():
         c = Country.by_name(country)
-        c.cash_limit = limit
         if limit == "No limit":
             c.cash_limit_normalized = 0
             continue
@@ -225,6 +225,7 @@ def add_cash_limit(countries):
             eur = int(limit[0])
         else:
             eur = round(int(limit[0]) * CURRENCY_TO_EURO[limit[1]])
+        c.cash_limit = eur
         c.cash_limit_normalized = round(max(0, 20000 - eur) / 200)
 
 
@@ -264,7 +265,7 @@ def add_social_security(countries):
             continue
         c = Country.by_name(country)
         c.social_security = social_security
-        c.social_security_normalized = 0  # TODO
+        c.social_security_normalized = round(min(100, float(social_security)))
 
 
 def add_personal_income_tax(countries):
@@ -282,7 +283,7 @@ def add_personal_income_tax(countries):
             continue
         c = Country.by_name(country)
         c.personal_income_tax = personal_income_tax
-        c.personal_income_tax_normalized = 0  # TODO
+        c.personal_income_tax_normalized = round(min(100, float(personal_income_tax)))
 
 
 def add_cryptocurrency_status(countries):
@@ -290,8 +291,9 @@ def add_cryptocurrency_status(countries):
         "Hostile": 100,
         "Contentious": 70,
         "Restricted": 40,
-        "Permissive": 10,
+        "Permissive": 0,
         "Legal tender": 0,
+        "Unknown": 0,
     }
     # from https://en.wikipedia.org/wiki/Legality_of_cryptocurrency_by_country_or_territory
     data = {
@@ -405,25 +407,27 @@ def add_cryptocurrency_status(countries):
 
 def print_csv(countries):
     FIELDS = [
-        "code",
+        # "code",
         "flag",
         "name",
         "cbdc_status",
-        "cbdc_status_normalized",
+        # "cbdc_status_normalized",
         "cryptocurrency_status",
-        "cryptocurrency_status_normalized",
+        # "cryptocurrency_status_normalized",
         "cash_limit",
-        "cash_limit_normalized",
+        # "cash_limit_normalized",
         "inflation",
-        "inflation_normalized",
+        # "inflation_normalized",
         "social_security",
-        "social_security_normalized",
+        # "social_security_normalized",
         "personal_income_tax",
-        "personal_income_tax_normalized",
+        # "personal_income_tax_normalized",
+        "financial_tyranny_index"
     ]
-    print(";".join(FIELDS))
+    print("\t".join(FIELDS))
     for c in countries.values():
-        print(";".join([str(getattr(c, f, "")) for f in FIELDS]))
+        if all(getattr(c, f) is not None for f in FIELDS):
+            print("\t".join([str(getattr(c, f)) for f in FIELDS]))
 
 def main():
     for c in iso3166_countries:
@@ -462,6 +466,20 @@ def main():
     add_inflation(countries)
     add_social_security(countries)
     add_personal_income_tax(countries)
+
+    for c in countries.values():
+        v = 0
+        try:
+            v += c.cbdc_status_normalized * 0.2
+            v += c.cryptocurrency_status_normalized * 0.2
+            v += c.cash_limit_normalized * 0.2
+            v += c.inflation_normalized * 0.2
+            v += c.social_security_normalized * 0.1
+            v += c.personal_income_tax_normalized * 0.1
+            v = round(v)
+            c.financial_tyranny_index = v
+        except TypeError:
+            c.financial_tyranny_index = None
 
     print_csv(countries)
 
