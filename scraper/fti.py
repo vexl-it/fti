@@ -220,6 +220,7 @@ def add_cash_limit(countries):
     for country, limit in dd.items():
         c = Country.by_name(country)
         if limit == "No limit":
+            c.cash_limit = "No limit"
             c.cash_limit_normalized = 0
             continue
         limit = limit.split(" ")
