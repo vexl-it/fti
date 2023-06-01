@@ -1,1 +1,4 @@
-Financial Tyranny Index (FTI)
+# Financial Tyranny Index (FTI)
+
+- [CSV](fti.csv)
+- [PDF](fti.pdf)
