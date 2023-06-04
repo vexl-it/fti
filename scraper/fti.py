@@ -476,10 +476,12 @@ def print_csv(countries):
         # "personal_income_tax_normalized",
         "financial_tyranny_index",
     ]
-    print("\t".join(FIELDS))
+    print("#\t" + "\t".join(FIELDS))
+    i = 1
     for c in countries.values():
         if all(getattr(c, f) is not None for f in FIELDS):
-            print("\t".join([str(getattr(c, f)) for f in FIELDS]))
+            print(f"{i}\t" + "\t".join([str(getattr(c, f)) for f in FIELDS]))
+            i += 1
 
 
 def main():
