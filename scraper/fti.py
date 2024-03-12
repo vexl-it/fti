@@ -124,6 +124,8 @@ def add_cbdc_status(countries):
                 cc = ["IL", "HK"]
             elif country == "Eastern Caribbean Economic and Currency Union (OECS/ECCU)":
                 cc = ["AI", "AG", "DM", "GD", "MS", "KN", "LC", "VC"]
+            elif country == "Economic and Monetary Community of Central Africa (EMCCA)":
+                cc = ["CM", "CF", "TD", "CG", "GQ", "GA"]
             else:
                 assert False, f"unknown country: {country}"
             for c in cc:
