@@ -1,49 +1,49 @@
 #	flag	name	cbdc_status	cryptocurrency_status	cash_limit	money_supply_growth	social_security	personal_income_tax	financial_tyranny_index
-1	🇦🇷	Argentina	Research	Contentious	9400	42.4	37.4	35	60
-2	🇦🇺	Australia	Research	Permissive	6100	9.5	11.5	45	33
-3	🇦🇹	Austria	Research	Permissive	No limit	-4.5	39.35	55	22
-4	🇧🇪	Belgium	Research	Permissive	3000	-4.5	48.07	50	41
-5	🇧🇷	Brazil	Proof of concept	Permissive	5400	16.6	39.8	27.5	45
-6	🇨🇦	Canada	Pilot	Contentious	6900	-18.9	14.38	33	53
-7	🇨🇳	China	Pilot	Hostile	6500	9.6	39.02	45	70
-8	🇭🇷	Croatia	Research	Permissive	15000	-4.5	36.5	30	22
-9	🇨🇾	Cyprus	Research	Permissive	No limit	-4.5	16.6	35	14
-10	🇨🇿	Czechia	Research	Permissive	10000	-1.8	44.8	23	28
-11	🇩🇰	Denmark	Research	Permissive	2500	15.5	0	56	38
-12	🇪🇪	Estonia	Research	Permissive	No limit	-4.5	37.4	20	16
-13	🇫🇮	Finland	Research	Permissive	No limit	-4.5	31.55	56.95	20
-14	🇫🇷	France	Pilot	Permissive	1000	-4.5	68	45	54
-15	🇩🇪	Germany	Research	Permissive	10000	-4.5	36.66	45	30
-16	🇬🇷	Greece	Research	Permissive	500	-4.5	36.16	44	40
-17	🇭🇺	Hungary	Proof of concept	Permissive	4000	54.4	31.5	15	55
-18	🇮🇳	India	Pilot	Permissive	110	10.3	24	42.74	53
-19	🇮🇩	Indonesia	Research	Restricted	6200	27.0	15.74	35	47
-20	🇮🇪	Ireland	Research	Permissive	No limit	-4.5	15.05	40	15
-21	🇮🇱	Israel	Proof of concept	Permissive	1500	2.5	19.6	50	43
-22	🇮🇹	Italy	Research	Permissive	1000	-4.5	40	43	40
-23	🇯🇵	Japan	Proof of concept	Permissive	6700	-5.6	31.14	55.97	39
-24	🇰🇷	South Korea	Proof of concept	Permissive	7100	10.7	19.24	45	40
-25	🇱🇻	Latvia	Research	Unknown	7000	-4.5	34.09	31	30
-26	🇱🇹	Lithuania	Research	Permissive	3000	-4.5	21.27	20	29
-27	🇱🇺	Luxembourg	Research	Permissive	No limit	-4.5	27.9	42	18
-28	🇲🇹	Malta	Research	Permissive	10000	-4.5	20	35	25
-29	🇲🇽	Mexico	Research	Permissive	10600	10.6	9.23	35	26
-30	🇳🇱	Netherlands	Research	Permissive	3000	-4.5	51.24	49.5	41
-31	🇳🇴	Norway	Proof of concept	Permissive	10000	2.8	22.1	38.2	33
-32	🇵🇱	Poland	Research	Permissive	3000	-6.4	35.85	32	35
-33	🇵🇹	Portugal	Research	Permissive	3000	-4.5	34.75	48	38
-34	🇷🇴	Romania	Unknown	Permissive	10000	12.3	37.25	10	24
-35	🇷🇺	Russia	Proof of concept	Contentious	1100	20.1	30	13	59
-36	🇸🇦	Saudi Arabia	Pilot	Contentious	15000	2.2	22	0	40
-37	🇸🇬	Singapore	Pilot	Permissive	13800	-1.1	37	22	34
-38	🇸🇰	Slovakia	Research	Permissive	5000	-4.5	48.6	25	34
-39	🇸🇮	Slovenia	Research	Permissive	5000	-4.5	38.2	45	36
-40	🇿🇦	South Africa	Research	Permissive	1175	14.0	2	45	38
-41	🇪🇸	Spain	Research	Permissive	1000	-4.5	36.25	47	40
-42	🇸🇪	Sweden	Proof of concept	Permissive	No limit	3.3	38.42	52.3	29
-43	🇨🇭	Switzerland	Research	Permissive	103000	-21.0	12.8	40	15
-44	🇹🇼	Taiwan	Proof of concept	Contentious	15000	10.8	15.76	40	45
-45	🇹🇷	Turkey	Proof of concept	Contentious	3375	68.5	34.5	40	76
-46	🇦🇪	United Arab Emirates	Pilot	Contentious	13750	5.3	17.5	0	42
-47	🇬🇧	United Kingdom	Research	Permissive	10000	-3.4	31.55	45	29
-48	🇺🇸	United States of America	Research	Permissive	9400	-15.7	15.3	37	25
+1	🇦🇷	Argentina	Research	Contentious	9400	84.6	37.4	35	63
+2	🇦🇺	Australia	Proof of concept	Permissive	6100	-19.6	13	45	36
+3	🇦🇹	Austria	Research	Permissive	No limit	-8.8	39.15	55	22
+4	🇧🇪	Belgium	Research	Permissive	3000	-8.8	48.07	50	41
+5	🇧🇷	Brazil	Proof of concept	Permissive	5400	20.4	42.8	27.5	47
+6	🇨🇦	Canada	Proof of concept	Contentious	6900	-24.5	14.38	33	47
+7	🇨🇳	China	Pilot	Hostile	6500	7.8	39.02	45	70
+8	🇭🇷	Croatia	Research	Permissive	15000	-8.8	36.5	30	22
+9	🇨🇾	Cyprus	Research	Permissive	No limit	-8.8	17.6	35	14
+10	🇨🇿	Czechia	Research	Permissive	10000	-4.3	44.8	23	28
+11	🇩🇰	Denmark	Research	Permissive	2500	10.8	0	56	36
+12	🇪🇪	Estonia	Research	Permissive	No limit	-8.8	37.4	20	16
+13	🇫🇮	Finland	Research	Permissive	No limit	-8.8	31.55	56.95	20
+14	🇫🇷	France	Pilot	Permissive	1000	-8.8	68	45	54
+15	🇩🇪	Germany	Research	Permissive	10000	-8.8	38.74	45	31
+16	🇬🇷	Greece	Research	Permissive	500	-8.8	36.16	44	40
+17	🇭🇺	Hungary	Pilot	Permissive	4000	7.7	31.5	15	44
+18	🇮🇳	India	Pilot	Permissive	110	6.0	24	42.74	52
+19	🇮🇩	Indonesia	Research	Restricted	6200	-1.5	15.74	35	36
+20	🇮🇪	Ireland	Research	Permissive	No limit	-8.8	15.05	40	15
+21	🇮🇱	Israel	Proof of concept	Permissive	1500	-2.2	19.6	50	42
+22	🇮🇹	Italy	Research	Permissive	1000	-8.8	40	43	40
+23	🇯🇵	Japan	Proof of concept	Permissive	6700	6.4	31.14	55.97	42
+24	🇰🇷	South Korea	Pilot	Permissive	7100	-1.5	19.24	45	42
+25	🇱🇻	Latvia	Research	Unknown	7000	-8.8	34.09	31	30
+26	🇱🇹	Lithuania	Research	Permissive	3000	-8.8	21.27	20	29
+27	🇱🇺	Luxembourg	Research	Permissive	No limit	-8.8	27.9	42	18
+28	🇲🇹	Malta	Research	Permissive	10000	-8.8	20	35	25
+29	🇲🇽	Mexico	Research	Permissive	10600	9.6	9.23	35	26
+30	🇳🇱	Netherlands	Research	Permissive	3000	-8.8	51.24	49.5	41
+31	🇳🇴	Norway	Proof of concept	Permissive	10000	3.4	22.1	38.2	33
+32	🇵🇱	Poland	Research	Permissive	3000	6.7	35.85	32	37
+33	🇵🇹	Portugal	Research	Permissive	3000	-8.8	34.75	48	38
+34	🇷🇴	Romania	Unknown	Permissive	10000	29.9	37.25	10	31
+35	🇷🇺	Russia	Pilot	Contentious	1100	8.5	30	13	61
+36	🇸🇦	Saudi Arabia	Pilot	Contentious	15000	3.5	22	0	41
+37	🇸🇬	Singapore	Pilot	Permissive	13800	0.8	37	22	34
+38	🇸🇰	Slovakia	Research	Permissive	5000	-8.8	48.6	25	34
+39	🇸🇮	Slovenia	Research	Permissive	5000	-8.8	38.2	50	37
+40	🇿🇦	South Africa	Research	Permissive	1175	8.9	2	45	36
+41	🇪🇸	Spain	Research	Permissive	1000	-8.8	36.25	47	40
+42	🇸🇪	Sweden	Proof of concept	Permissive	No limit	-14.6	38.42	52.3	28
+43	🇨🇭	Switzerland	Pilot	Permissive	103000	-9.4	12.8	40	27
+44	🇹🇼	Taiwan	Research	Contentious	15000	4.6	15.76	40	36
+45	🇹🇷	Turkey	Proof of concept	Contentious	3375	116.3	34.5	40	76
+46	🇦🇪	United Arab Emirates	Pilot	Contentious	13750	26.3	17.5	0	50
+47	🇬🇧	United Kingdom	Research	Permissive	10000	-12.7	31.55	45	29
+48	🇺🇸	United States of America	Proof of concept	Permissive	9400	7.6	15.3	37	34
