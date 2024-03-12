@@ -479,11 +479,13 @@ def print_csv(countries):
         "financial_tyranny_index",
     ]
     print("#\t" + "\t".join(FIELDS))
+
+    countries = [c for c in countries.values() if all(getattr(c, f) is not None for f in FIELDS)]
+
     i = 1
-    for c in countries.values():
-        if all(getattr(c, f) is not None for f in FIELDS):
-            print(f"{i}\t" + "\t".join([str(getattr(c, f)) for f in FIELDS]))
-            i += 1
+    for c in sorted(countries, key=lambda x: -x.financial_tyranny_index):
+        print(f"{i}\t" + "\t".join([str(getattr(c, f)) for f in FIELDS]))
+        i += 1
 
 
 def main():
