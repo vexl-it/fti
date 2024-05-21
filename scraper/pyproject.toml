@@ -8,7 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.8"
 iso3166 = "^2.1.1"
-requests = "^2.31.0"
+requests = "^2.32.0"
 requests-cache = "^1.2.0"
 lxml = "^5.1.0"
 
